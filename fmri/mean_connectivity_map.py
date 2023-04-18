@@ -37,6 +37,7 @@ rois = ['l' + roi + roi_suf for roi in rois] + ['r' + roi + roi_suf for roi in r
 out_dir = f'{params.study_dir}/derivatives/fc'
 
 whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_strucseg_periph.nii.gz'
+#whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_brain.nii.gz'
 
 """
 run 2nd level model on each first level
@@ -48,23 +49,30 @@ alpha = .05
 for roi in rois:
     print(roi)
     fc_img = []
+    fc_img_z = []
     for sub in sub_list:
         #check if file exists
         if os.path.exists(f'{out_dir}/sub-{sub}_{roi}_fc.nii.gz'):
             
             curr_img = image.load_img(f'{out_dir}/sub-{sub}_{roi}_fc.nii.gz')
 
-            curr_img = image.clean_img(curr_img, standardize=True)
+            z_img = image.clean_img(curr_img, standardize=True)
 
+            fc_img_z.append(z_img)
             fc_img.append(curr_img)
 
-    design_matrix = pd.DataFrame([1] * len(fc_img),
+    design_matrix = pd.DataFrame([1] * len(fc_img_z),
                             columns=['intercept'])
-    final_img= second_level_model.fit(fc_img, design_matrix= design_matrix)
+    final_img= second_level_model.fit(fc_img_z, design_matrix= design_matrix)
     z_map = final_img.compute_contrast(output_type='z_score')
 
-    thresh_val = glm.threshold_stats_img(z_map,alpha=alpha,height_control='fpr', cluster_threshold = 4,mask_img= whole_brain_mask)
+    #mean images
+    mean_img = image.mean_img(fc_img)
+
+    thresh_val = glm.threshold_stats_img(z_map,alpha=alpha,height_control='fdr', cluster_threshold = 4,mask_img= whole_brain_mask)
     
     os.makedirs(f'{results_dir}/{exp}', exist_ok=True)
-    nib.save(thresh_val[0], f'{results_dir}/{exp}/{roi}_{exp}.nii.gz')
+    nib.save(z_map, f'{results_dir}/{exp}/{roi}_{exp}_z.nii.gz')
+
+    nib.save(mean_img, f'{results_dir}/{exp}/{roi}_{exp}_corr.nii.gz')
     print(f'{roi}', thresh_val[1])
