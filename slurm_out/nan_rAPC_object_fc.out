@@ -1,0 +1,13 @@
+/home/vayzenbe/anaconda3/envs/fmri_new/lib/python3.8/site-packages/nilearn/input_data/__init__.py:27: FutureWarning: The import path 'nilearn.input_data' is deprecated in version 0.9. Importing from 'nilearn.input_data' will be possible at least until release 0.13.0. Please import from 'nilearn.maskers' instead.
+  warnings.warn(message, FutureWarning)
+Calculating fc for... spaceloc1011 nan rAPC
+Traceback (most recent call last):
+  File "fmri/erd_fc.py", line 117, in <module>
+    conduct_fc(loc_sub, erd_sub, roi)
+  File "fmri/erd_fc.py", line 85, in conduct_fc
+    curr_run = image.load_img(f'{exp_dir}/run-0{run}/1stLevel.feat/filtered_func_data_reg.nii.gz')
+  File "/home/vayzenbe/anaconda3/envs/fmri_new/lib/python3.8/site-packages/nilearn/image/image.py", line 1247, in load_img
+    return check_niimg(img, wildcards=wildcards, dtype=dtype)
+  File "/home/vayzenbe/anaconda3/envs/fmri_new/lib/python3.8/site-packages/nilearn/_utils/niimg_conversions.py", line 271, in check_niimg
+    raise ValueError("File not found: '%s'" % niimg)
+ValueError: File not found: '/lab_data/behrmannlab/vlad/bwoc/sub-nan/ses-02//derivatives/fsl/catmvpa/run-01/1stLevel.feat/filtered_func_data_reg.nii.gz'

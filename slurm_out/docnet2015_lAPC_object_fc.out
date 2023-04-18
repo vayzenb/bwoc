@@ -1,0 +1,4 @@
+/home/vayzenbe/anaconda3/envs/fmri_new/lib/python3.8/site-packages/nilearn/input_data/__init__.py:27: FutureWarning: The import path 'nilearn.input_data' is deprecated in version 0.9. Importing from 'nilearn.input_data' will be possible at least until release 0.13.0. Please import from 'nilearn.maskers' instead.
+  warnings.warn(message, FutureWarning)
+Calculating fc for... spaceloc2015 docnet2015 lAPC
+docnet2015 lAPC toolloc 0.6959678
