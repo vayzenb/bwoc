@@ -1,4 +1,4 @@
-/home/vayzenbe/anaconda3/envs/fmri_new/lib/python3.8/site-packages/nilearn/input_data/__init__.py:27: FutureWarning: The import path 'nilearn.input_data' is deprecated in version 0.9. Importing from 'nilearn.input_data' will be possible at least until release 0.13.0. Please import from 'nilearn.maskers' instead.
-  warnings.warn(message, FutureWarning)
-Calculating fc for... spaceloc1001 docnet2001 lPFS
-docnet2001 lPFS toolloc 0.4297396
+Traceback (most recent call last):
+  File "fmri/erd_fc.py", line 5, in <module>
+    from nilearn import image, plotting,  glm
+ImportError: cannot import name 'image' from 'nilearn' (unknown location)

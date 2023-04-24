@@ -27,7 +27,7 @@ warnings.filterwarnings('ignore')
 subs = params.sub_info['loc_sub'].tolist()
 
 
-out_dir = f'{params.study_dir}/derivatives/fc'
+out_dir = f'{params.scratch_dir}/derivatives/ppi'
 os.makedirs(out_dir, exist_ok=True)
 
 cov_dir = f'{params.loc_data}'
@@ -265,17 +265,14 @@ def create_summary():
                             roi_mean.append(acts.mean())
                         else:
                             roi_mean.append(np.nan)
-            #pdb.set_trace()
+
                 summary_df = summary_df.append(pd.Series(roi_mean, index = summary_df.columns), ignore_index = True)
-        #print(ventral)
+
             summary_df.to_csv(f'{results_dir}/ppi/{ventral}_fc{file_suf}.csv', index=False)
-        #summary_df.iloc[:, 1:].mean().plot.bar()
-        #plt.pause(0.0001)
-                
 
 
 
-extract_roi_coords(rois)
+#extract_roi_coords(rois)
 
 
 conduct_ppi()

@@ -19,3 +19,4 @@ loc_data = f'/lab_data/behrmannlab/vlad/hemispace'
 erd_data = f'/lab_data/behrmannlab/vlad/docnet'
 
 study_dir = f'/lab_data/behrmannlab/vlad/{study}'
+scratch_dir =f'/lab_data/behrmannlab/scratch/vlad/{study}'
