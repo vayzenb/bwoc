@@ -171,7 +171,7 @@ def conduct_fc(loc_sub, erd_sub, roi):
         mean_fc = seed_to_voxel_correlations_img
             
         nib.save(mean_fc, f'{out_dir}/sub-{erd_sub}_{roi}_{tsk}_fc.nii.gz')
-        nib.save(dist_correlations_img, f'{out_dir}/sub-{erd_sub}_{roi}_{tsk}_fc_z.nii.gz')
+        nib.save(dist_correlations_img, f'{out_dir}/sub-{erd_sub}_{roi}_{tsk}_fc_dist.nii.gz')
 
 
 

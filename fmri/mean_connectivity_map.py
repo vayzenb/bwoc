@@ -34,6 +34,8 @@ roi_suf = '_toolloc'
 # create left and right versinos of each roi
 rois = ['l' + roi + roi_suf for roi in rois] + ['r' + roi + roi_suf for roi in rois]
 
+file_suf = '_dist'
+
 out_dir = f'{params.scratch_dir}/derivatives/fc'
 
 whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_strucseg_periph.nii.gz'
@@ -54,11 +56,12 @@ for roi in rois:
         #check if file exists
         if os.path.exists(f'{out_dir}/sub-{sub}_{roi}_fc.nii.gz'):
             
-            curr_img = image.load_img(f'{out_dir}/sub-{sub}_{roi}_fc.nii.gz')
+            curr_img = image.load_img(f'{out_dir}/sub-{sub}_{roi}_fc{file_suf}.nii.gz')
 
-            z_img = image.clean_img(curr_img, standardize=True)
 
-            fc_img_z.append(z_img)
+            #z_img = image.clean_img(curr_img, standardize=True)
+
+            fc_img_z.append(curr_img)
             fc_img.append(curr_img)
 
     design_matrix = pd.DataFrame([1] * len(fc_img_z),
@@ -72,7 +75,7 @@ for roi in rois:
     thresh_val = glm.threshold_stats_img(z_map,alpha=alpha,height_control='fdr', cluster_threshold = 4,mask_img= whole_brain_mask)
     
     os.makedirs(f'{results_dir}/{exp}', exist_ok=True)
-    nib.save(z_map, f'{results_dir}/{exp}/{roi}_{exp}_z.nii.gz')
+    nib.save(z_map, f'{results_dir}/{exp}/{roi}_{exp}_z{file_suf}.nii.gz')
 
-    nib.save(mean_img, f'{results_dir}/{exp}/{roi}_{exp}_corr.nii.gz')
+    nib.save(mean_img, f'{results_dir}/{exp}/{roi}_{exp}_corr{file_suf}.nii.gz')
     print(f'{roi}', thresh_val[1])
