@@ -34,7 +34,7 @@ roi_suf = '_toolloc'
 # create left and right versinos of each roi
 rois = ['l' + roi + roi_suf for roi in rois] + ['r' + roi + roi_suf for roi in rois]
 
-out_dir = f'{params.study_dir}/derivatives/fc'
+out_dir = f'{params.scratch_dir}/derivatives/fc'
 
 whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_strucseg_periph.nii.gz'
 #whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_brain.nii.gz'

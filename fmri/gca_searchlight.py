@@ -1,11 +1,13 @@
 # To add a new cell, type '# %%'
 # To add a new markdown cell, type '# %% [markdown]'
 # %%
-
+import sys
+curr_dir = '/user_data/vayzenbe/GitHub_Repos/bwoc'
+sys.path.insert(0, curr_dir)
 import warnings
 warnings.filterwarnings("ignore")
 import resource
-import sys
+
 import time
 import os
 import gc
@@ -20,7 +22,7 @@ from sklearn.linear_model import LinearRegression
 from nilearn import image, datasets
 import nibabel as nib
 from brainiak.searchlight.searchlight import Searchlight, Ball
-
+import bwoc_params as params
 
 
 print('libraries loaded...')
@@ -29,20 +31,20 @@ print('libraries loaded...')
 
 #load subj number and seed
 #subj
-ss = int(sys.argv[1])
+sub = int(sys.argv[1])
 #seed region
-dorsal = str(sys.argv[2])
+roi = str(sys.argv[2])
 
 print(ss, dorsal)
 # %%
 #setup directories
 study ='docnet'
-study_dir = f"/lab_data/behrmannlab/vlad/{study}"
-out_dir = f'{study_dir}/derivatives/fc'
-results_dir = '/user_data/vayzenbe/GitHub_Repos/docnet/results'
+
+out_dir = f'{params.scratch_dir}/derivatives/fc'
+results_dir = f'/{curr_dir}/results'
 exp = 'catmvpa'
 
-sub_dir = f'{study_dir}/sub-{study}{ss}/ses-02/'
+sub_dir = f'{params.study_dir}/sub-{study}{ss}/ses-02/'
 cov_dir = f'{sub_dir}/covs'
 roi_dir = f'{sub_dir}/derivatives/rois'
 exp_dir = f'{sub_dir}/derivatives/fsl/{exp}'
@@ -112,12 +114,7 @@ def calc_pc_n(pca, thresh):
         if var >=thresh: #once variance > than thresh, stop
             break
     
-    '''
-    plt.bar(range(len(explained_variance[0:n_comp+1])), explained_variance[0:n_comp+1], alpha=0.5, align='center')
-    plt.ylabel('Variance ratio')
-    plt.xlabel('Principal components')
-    plt.show()
-    '''
+
     return n_comp+1
 
 
@@ -246,13 +243,13 @@ def load_data():
 
 
     # %%
-def extract_seed_ts(bold_vol):
+def extract_seed_ts(bold_vol, roi):
     """
     extract all data from seed region
     """
 
     #load seed
-    seed_roi = image.get_data(image.load_img(f'{roi_dir}/spheres/{dorsal}_sphere.nii.gz'))
+    seed_roi = image.get_data(image.load_img(f'{roi_dir}/spheres/{roi}_sphere.nii.gz'))
     reshaped_roi = np.reshape(seed_roi, (91,109,91,1))
     masked_img = reshaped_roi*bold_vol
 
@@ -268,7 +265,17 @@ def extract_seed_ts(bold_vol):
 # %%
 
 
+#load coords for current roi
+roi_coords = pd.read_csv(f'{roi_dir}/spheres/sphere_coords.csv')
+curr_coords = roi_coords[(roi_coords['task'] ==task) & (roi_coords['roi'] ==roi)]
+
+
+#load TS
 bold_vol = load_data()
+
+
+
+
 seed_ts = extract_seed_ts(bold_vol)
 
 # %%

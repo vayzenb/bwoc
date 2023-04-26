@@ -47,7 +47,7 @@ def setup_sbatch(job_name, script_name):
 # Standard output and error log
 #SBATCH --output={curr_dir}/slurm_out/{job_name}.out
 
-conda activate fmri_new
+conda activate fmri
 {script_name}
 """
     return sbatch_setup

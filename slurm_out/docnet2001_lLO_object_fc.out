@@ -1,4 +1,2 @@
-Traceback (most recent call last):
-  File "fmri/erd_fc.py", line 5, in <module>
-    from nilearn import image, plotting,  glm
-ImportError: cannot import name 'image' from 'nilearn' (unknown location)
+Calculating fc for... spaceloc1001 docnet2001 lLO
+docnet2001 lLO toolloc 0.41869748
