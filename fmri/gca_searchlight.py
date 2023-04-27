@@ -19,11 +19,14 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import ShuffleSplit
 from sklearn.linear_model import LinearRegression
 
+from nilearn.maskers import NiftiSpheresMasker, NiftiMasker
+
 from nilearn import image, datasets
 import nibabel as nib
 from brainiak.searchlight.searchlight import Searchlight, Ball
 import bwoc_params as params
 
+from statsmodels.tsa.stattools import grangercausalitytests
 
 print('libraries loaded...')
 
@@ -31,27 +34,32 @@ print('libraries loaded...')
 
 #load subj number and seed
 #subj
-sub = int(sys.argv[1])
+loc_sub = sys.argv[1]
+erd_sub = sys.argv[2]
 #seed region
-roi = str(sys.argv[2])
+roi = sys.argv[3]
 
-print(ss, dorsal)
+print(loc_sub,erd_sub, roi)
 # %%
 #setup directories
 study ='docnet'
 
-out_dir = f'{params.scratch_dir}/derivatives/fc'
+out_dir = f'{params.scratch_dir}/derivatives/efc'
+os.makedirs(out_dir, exist_ok=True)
 results_dir = f'/{curr_dir}/results'
 exp = 'catmvpa'
 
-sub_dir = f'{params.study_dir}/sub-{study}{ss}/ses-02/'
-cov_dir = f'{sub_dir}/covs'
-roi_dir = f'{sub_dir}/derivatives/rois'
+sub_dir = f'{params.study_dir}/sub-{erd_sub}/ses-02/'
+
+roi_dir = f'{params.study_dir}/sub-{loc_sub}/ses-01/derivatives/rois'
 exp_dir = f'{sub_dir}/derivatives/fsl/{exp}'
 
 runs = list(range(1,9))
 
-whole_brain_mask = image.load_img('/user_data/vayzenbe/GitHub_Repos/fmri/roiParcels/mruczek_parcels/binary/all_visual_areas.nii.gz')
+print(erd_sub, roi, runs)
+
+
+whole_brain_mask = image.load_img('/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_strucseg_periph.nii.gz')
 affine = whole_brain_mask.affine
 dimsize = whole_brain_mask.header.get_zooms()  #get dimenisions
 
@@ -76,67 +84,13 @@ mask = image.get_data(whole_brain_mask) #the mask to search within
 
 
 sl_rad = 2 #radius of searchlight sphere (in voxels)
-max_blk_edge = 10 #how many blocks to send on each parallelized search
+max_blk_edge = 5 #how many blocks to send on each parallelized search
 pool_size = 1 #number of cores to work on each search
 
 voxels_proportion=1
 shape = Ball
 
-# %%
-def extract_pc(data, n_components=None):
 
-    """
-    Extract principal components
-    if n_components isn't set, it will extract all it can
-    """
-    
-    pca = PCA(n_components = n_components)
-    pca.fit(data)
-    
-    return pca
-
-# %%
-def calc_pc_n(pca, thresh):
-    '''
-    Calculate how many PCs are needed to explain X% of data
-    
-    pca - result of pca analysis
-    thresh- threshold for how many components to keep
-    '''
-    
-    explained_variance = pca.explained_variance_ratio_
-    
-    var = 0
-    for n_comp, ev in enumerate(explained_variance):
-        var += ev #add each PC's variance to current variance
-        #print(n_comp, ev, var)
-
-        if var >=thresh: #once variance > than thresh, stop
-            break
-    
-
-    return n_comp+1
-
-
-# %%
-def calc_mvc(seed_train,seed_test, target_train, target_test, target_pc):
-    """
-    Conduct regression by iteratively fitting all seed PCs to target PCs
-
-    seed_train,seed_test, target_train, target_test, target_pc
-    """
-
-    all_corrs = []
-    for pcn in range(0,len(target_pc.explained_variance_ratio_)):
-        
-        clf.fit(seed_train, target_train[:,pcn]) #fit seed PCs to target
-        pred_ts = clf.predict(seed_test) #use dorsal test data to predict left out runs of ventral test data
-        weighted_corr = np.corrcoef(pred_ts,target_test[:,pcn])[0,1] * target_pc.explained_variance_ratio_[pcn]
-        all_corrs.append(weighted_corr)
-
-    final_corr = np.sum(all_corrs)/(np.sum(target_pc.explained_variance_ratio_))
-
-    return final_corr
 
 
 # %%
@@ -159,9 +113,9 @@ def create_ts_mask(train, test):
 
 
 # %%
-def mvpd(data, sl_mask, myrad, seed_ts):
+def gca(data, sl_mask, myrad, seed_ts):
     """
-    Run multivaraite pattern dependance analysis
+    Seed to sphere gca
     """
     
     # Pull out the data
@@ -169,45 +123,26 @@ def mvpd(data, sl_mask, myrad, seed_ts):
     data4D = np.transpose(data4D.reshape(-1, data[0].shape[3]))
     #print('mvpd', (resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024)/1024)
 
-    mvc_list = []
     
-    #set up train/test split
-    for train_runs, test_runs in rs.split(runs): 
-        
-        #determine train time points and test time points
-        train_index, test_index = create_ts_mask(train_runs, test_runs)
-        
-        
-        #split seed ts in train and test
-        seed_train = seed_ts[train_index,:]
-        seed_test = seed_ts[test_index,:]
-        
-        #split target region timeseries into train and test
-        target_train = data4D[train_index, :]
-        target_test = data4D[test_index, :]
-        
-        #extract PCs from seed and target
-        n_comp = calc_pc_n(extract_pc(seed_train),pc_thresh) #determine number of PCs in train_data using threshold
-        
-        seed_pca = extract_pc(seed_train, n_comp) #conduct PCA one more time with that number of PCs
-        #print(seed_pca.shape)
 
-        seed_train_pcs = seed_pca.transform(seed_train) #transform train data in PCs
-        seed_test_pcs = seed_pca.transform(seed_test) #transform test data into PCs 
-        
+    #calcualte mean TS for target region
+    target_ts = np.mean(data4D, axis=1)
 
-        #extract PCs from seed and target
-        n_comp = calc_pc_n(extract_pc(target_train),pc_thresh) #determine number of PCs in train_data using threshold
-        target_pca = extract_pc(target_train, n_comp) #conduct PCA one more time with that number of PCs
-        
+    neural_ts= pd.DataFrame(columns = ['seed', 'target'])
+    neural_ts['seed'] = np.squeeze(seed_ts)
+    neural_ts['target'] = np.squeeze(target_ts)
 
-        target_train_pcs = target_pca.transform(target_train) #transform train data in PCs
-        target_test_pcs = target_pca.transform(target_test) #transform test data into PCs
+    #extract F stat from granger causality test seed-> target
+    gc_res_seed = grangercausalitytests(neural_ts[['target','seed']], 1, verbose=False)
 
-        mvc_list.append(calc_mvc(seed_train_pcs, seed_test_pcs, target_train_pcs, target_test_pcs, target_pca))
+    #extract F stat from granger causality test target-> seed
+    gc_res_target = grangercausalitytests(neural_ts[['seed','target']], 1, verbose=False)
+    
+    #calc difference
+    f_diff = gc_res_seed[1][0]['ssr_ftest'][0]-gc_res_target[1][0]['ssr_ftest'][0]
 
 
-    return np.mean(mvc_list)     
+    return f_diff    
 
 
 
@@ -238,45 +173,45 @@ def load_data():
     print('data concatenated...')
     gc.collect()
 
+
+
     return bold_vol
 
 
 
     # %%
-def extract_seed_ts(bold_vol, roi):
+def extract_seed_ts(bold_vol, coords):
     """
     extract all data from seed region
     """
 
-    #load seed
-    seed_roi = image.get_data(image.load_img(f'{roi_dir}/spheres/{roi}_sphere.nii.gz'))
-    reshaped_roi = np.reshape(seed_roi, (91,109,91,1))
-    masked_img = reshaped_roi*bold_vol
+    roi_masker = NiftiSpheresMasker([tuple(coords)], radius = 6)
 
-    #extract voxel resposnes from within mask
-    seed_ts = masked_img.reshape(-1, bold_vol.shape[3]) #reshape into rows (voxels) x columns (time)
-    seed_ts =seed_ts[~np.all(seed_ts == 0, axis=1)] #remove voxels that are 0 (masked out)
-    seed_ts = np.transpose(seed_ts)
+    bold_vol = nib.Nifti1Image(bold_vol, affine)
+    seed_time_series = roi_masker.fit_transform(bold_vol)
+
+
+    phys = np.mean(seed_time_series, axis= 1)
+    #phys = (phys - np.mean(phys)) / np.std(phys) #zscore
+    phys = phys.reshape((phys.shape[0],1))
+    
 
     print('Seed data extracted...')
 
-    return seed_ts
+    return phys
 
 # %%
 
 
 #load coords for current roi
 roi_coords = pd.read_csv(f'{roi_dir}/spheres/sphere_coords.csv')
-curr_coords = roi_coords[(roi_coords['task'] ==task) & (roi_coords['roi'] ==roi)]
+curr_coords = roi_coords[(roi_coords['task'] ==params.task) & (roi_coords['roi'] ==roi)]
 
 
 #load TS
 bold_vol = load_data()
 
-
-
-
-seed_ts = extract_seed_ts(bold_vol)
+seed_ts = extract_seed_ts(bold_vol,curr_coords[['x','y','z']].values.tolist()[0])
 
 # %%
 #run searchlight
@@ -289,7 +224,7 @@ sl.distribute([bold_vol], mask) #send the 4dimg and mask
 print('Broadcast', (resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024)/1024)
 sl.broadcast(seed_ts) #send the relevant analysis vars
 print('Run', (resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024)/1024, flush= True)
-sl_result = sl.run_searchlight(mvpd, pool_size=pool_size)
+sl_result = sl.run_searchlight(gca, pool_size=pool_size)
 print("End Searchlight\n", (time.time()-t1)/60)
 
 
@@ -297,5 +232,5 @@ print("End Searchlight\n", (time.time()-t1)/60)
 sl_result = sl_result.astype('double')  # Convert the output into a precision format that can be used by other applications
 sl_result[np.isnan(sl_result)] = 0  # Exchange nans with zero to ensure compatibility with other applications
 sl_nii = nib.Nifti1Image(sl_result, affine)  # create the volume image
-nib.save(sl_nii, f'{out_dir}/{study}{ss}_{dorsal}_mvpd.nii.gz')  # Save the volume
+nib.save(sl_nii, f'{out_dir}/sub-{erd_sub}_{roi}_efc.nii.gz')  # Save the volume
 

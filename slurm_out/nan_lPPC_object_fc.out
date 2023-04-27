@@ -1,8 +1,8 @@
 Calculating fc for... spaceloc1011 nan lPPC
 Traceback (most recent call last):
-  File "/user_data/vayzenbe/GitHub_Repos/bwoc/fmri/erd_fc.py", line 180, in <module>
+  File "/user_data/vayzenbe/GitHub_Repos/bwoc/fmri/erd_fc.py", line 183, in <module>
     conduct_fc(loc_sub, erd_sub, roi)
-  File "/user_data/vayzenbe/GitHub_Repos/bwoc/fmri/erd_fc.py", line 113, in conduct_fc
+  File "/user_data/vayzenbe/GitHub_Repos/bwoc/fmri/erd_fc.py", line 112, in conduct_fc
     curr_run = image.load_img(f'{exp_dir}/run-0{run}/1stLevel.feat/filtered_func_data_reg.nii.gz')
   File "/home/vayzenbe/anaconda3/envs/fmri/lib/python3.9/site-packages/nilearn/image/image.py", line 1275, in load_img
     return check_niimg(img, wildcards=wildcards, dtype=dtype)

@@ -16,7 +16,7 @@ import bwoc_params as params
 mem = 48
 run_time = "3-00:00:00"
 
-pause_time = 10 #how much time (minutes) to wait between jobs
+pause_time = 20 #how much time (minutes) to wait between jobs
 pause_crit = 10 #how many jobs to do before pausing
 
 
@@ -54,13 +54,16 @@ conda activate fmri
 
 
 
-#extract fmri ts
+#run fmri scripts python script
+script_name = 'erd_fc'
+script_name = 'gca_searchlight'
+
 n =0 
 
 for loc_sub,erd_sub in zip(sub_list['loc_sub'], sub_list['erd_sub']):
     for roi in rois:
-        job_name = f'{erd_sub}_{roi}_object_fc'
-        script_path = f'python fmri/erd_fc.py {loc_sub} {erd_sub} {roi}'
+        job_name = f'{erd_sub}_{roi}_{script_name}'
+        script_path = f'python fmri/{script_name}.py {loc_sub} {erd_sub} {roi}'
         print(job_name)
 
         #create sbatch script

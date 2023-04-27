@@ -45,10 +45,9 @@ erd_task = 'catmvpa'
 #create runs 1 to 8
 runs = list(range(1,9))
 
-
-
 file_suf = ''
 
+first_fix = 8
 
 whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_brain_mask.nii.gz'
 mni = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_brain.nii.gz'
@@ -111,6 +110,10 @@ def conduct_fc(loc_sub, erd_sub, roi):
         for run in runs:
             
             curr_run = image.load_img(f'{exp_dir}/run-0{run}/1stLevel.feat/filtered_func_data_reg.nii.gz')
+            affine = curr_run.affine
+            curr_run = image.get_data(curr_run)
+            curr_run = curr_run[:,:,:,first_fix:]
+            curr_run = nib.Nifti1Image(curr_run, affine)
             curr_run = image.clean_img(curr_run,standardize=True)
             filtered_list.append(curr_run)
             

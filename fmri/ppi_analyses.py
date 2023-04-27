@@ -35,7 +35,7 @@ results_dir = f'/{curr_dir}/results'
 roi_suf = 'toolloc'
 rois = ['PPC', 'APC', 'LO', 'PFS']
 
-
+first_fix = 6
 
 runs = [1,2]
 
@@ -183,6 +183,8 @@ def conduct_ppi():
                     for run in runs:
                         
                         curr_run = image.load_img(f'{exp_dir}/run-0{run}/1stLevel.feat/filtered_func_data_reg.nii.gz')
+                        affine = curr_run.affine
+                        
                         curr_run = image.clean_img(curr_run,standardize=True)
                         filtered_list.append(curr_run)
                         
