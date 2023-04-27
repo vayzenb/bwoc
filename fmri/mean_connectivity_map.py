@@ -34,7 +34,7 @@ roi_suf = '_toolloc'
 # create left and right versinos of each roi
 rois = ['l' + roi + roi_suf for roi in rois] + ['r' + roi + roi_suf for roi in rois]
 
-file_suf = '_dist'
+file_suf = ''
 
 out_dir = f'{params.scratch_dir}/derivatives/fc'
 

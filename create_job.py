@@ -23,7 +23,7 @@ pause_crit = 10 #how many jobs to do before pausing
 sub_list = params.sub_info
 rois = ['PPC', 'APC', 'LO', 'PFS']
 #create left and right versinos of each roi
-rois = ['l'+roi + '' for roi in rois] + ['r' + roi for roi in rois]
+rois = ['l'+ roi for roi in rois] + ['r' + roi for roi in rois]
 
 
 suf = ''
@@ -47,7 +47,7 @@ def setup_sbatch(job_name, script_name):
 # Standard output and error log
 #SBATCH --output={curr_dir}/slurm_out/{job_name}.out
 
-conda activate fmri
+conda activate brainiak_new
 {script_name}
 """
     return sbatch_setup

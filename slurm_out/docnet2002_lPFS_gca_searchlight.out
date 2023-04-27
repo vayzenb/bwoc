@@ -1,0 +1,45 @@
+libraries loaded...
+spaceloc1002 docnet2002 lPFS
+docnet2002 lPFS [1, 2, 3, 4, 5, 6, 7, 8]
+Searchlight setup ...
+Loading data...
+1
+2.915660858154297
+2
+3.599559783935547
+3
+4.255805969238281
+4
+4.912029266357422
+5
+5.568244934082031
+6
+6.224460601806641
+7
+6.880687713623047
+8
+7.5368499755859375
+data loaded..
+concatenating data..
+22.78812026977539
+data concatenated...
+Seed data extracted...
+22.78812026977539
+Begin Searchlight None
+Distribute 22.78812026977539
+Broadcast 42.09463882446289
+Run 42.09463882446289
+Traceback (most recent call last):
+  File "fmri/gca_searchlight.py", line 227, in <module>
+    sl_result = sl.run_searchlight(gca, pool_size=pool_size)
+  File "/home/vayzenbe/anaconda3/envs/brainiak_new/lib/python3.7/site-packages/brainiak/searchlight/searchlight.py", line 521, in run_searchlight
+    pool_size)
+  File "/home/vayzenbe/anaconda3/envs/brainiak_new/lib/python3.7/site-packages/brainiak/searchlight/searchlight.py", line 457, in run_block_function
+    extra_block_fn_params)
+  File "/home/vayzenbe/anaconda3/envs/brainiak_new/lib/python3.7/site-packages/brainiak/searchlight/searchlight.py", line 560, in _singlenode_searchlight
+    bcast_var)
+  File "fmri/gca_searchlight.py", line 136, in gca
+    gc_res_seed = grangercausalitytests(neural_ts[['target','seed']], 1, verbose=False)
+  File "/home/vayzenbe/anaconda3/envs/brainiak_new/lib/python3.7/site-packages/statsmodels/tsa/stattools.py", line 1388, in grangercausalitytests
+    "The x values include a column with constant values and so"
+statsmodels.tools.sm_exceptions.InfeasibleTestError: The x values include a column with constant values and so the test statistic cannot be computed.
