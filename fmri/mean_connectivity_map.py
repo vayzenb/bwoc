@@ -24,22 +24,25 @@ import bwoc_params as params
 warnings.filterwarnings('ignore')
 
 sub_cond = 'erd'
-exp = 'fc'
+exp = 'efc'
 sub_list = params.sub_info[sub_cond+'_sub']
 
-results_dir = f'/{curr_dir}/results'
+results_dir = f'/{curr_dir}/results/{exp}'
+os.makedirs(results_dir, exist_ok=True)
 
 rois = ['PPC', 'APC', 'LO', 'PFS']
-roi_suf = '_toolloc'
+roi_suf = ''
 # create left and right versinos of each roi
 rois = ['l' + roi + roi_suf for roi in rois] + ['r' + roi + roi_suf for roi in rois]
 
+analysis_type = 'efc'
 file_suf = ''
 
-out_dir = f'{params.scratch_dir}/derivatives/fc'
 
-whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_strucseg_periph.nii.gz'
-#whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_brain.nii.gz'
+out_dir = f'{params.scratch_dir}/derivatives/{analysis_type}'
+
+#whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_strucseg_periph.nii.gz'
+whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_brain_mask.nii.gz'
 
 """
 run 2nd level model on each first level
@@ -54,9 +57,10 @@ for roi in rois:
     fc_img_z = []
     for sub in sub_list:
         #check if file exists
-        if os.path.exists(f'{out_dir}/sub-{sub}_{roi}_fc.nii.gz'):
+        
+        if os.path.exists(f'{out_dir}/sub-{sub}_{roi}_{analysis_type}{file_suf}.nii.gz'):
             
-            curr_img = image.load_img(f'{out_dir}/sub-{sub}_{roi}_fc{file_suf}.nii.gz')
+            curr_img = image.load_img(f'{out_dir}/sub-{sub}_{roi}_{analysis_type}{file_suf}.nii.gz')
 
 
             #z_img = image.clean_img(curr_img, standardize=True)
@@ -74,8 +78,8 @@ for roi in rois:
 
     thresh_val = glm.threshold_stats_img(z_map,alpha=alpha,height_control='fdr', cluster_threshold = 4,mask_img= whole_brain_mask)
     
-    os.makedirs(f'{results_dir}/{exp}', exist_ok=True)
-    nib.save(z_map, f'{results_dir}/{exp}/{roi}_{exp}_z{file_suf}.nii.gz')
+    
+    nib.save(z_map, f'{results_dir}/{roi}_{exp}_z{file_suf}.nii.gz')
 
-    nib.save(mean_img, f'{results_dir}/{exp}/{roi}_{exp}_corr{file_suf}.nii.gz')
+    nib.save(mean_img, f'{results_dir}/{roi}_{exp}_mean{file_suf}.nii.gz')
     print(f'{roi}', thresh_val[1])

@@ -1,0 +1,33 @@
+libraries loaded...
+spaceloc1012 docnet2012 rPFS
+docnet2012 rPFS [1, 2, 3, 4, 5, 6, 7, 8]
+Searchlight setup ...
+Loading data...
+1
+2.9156875610351562
+2
+3.5737991333007812
+3
+4.2029571533203125
+4
+4.831912994384766
+5
+5.460838317871094
+6
+6.089778900146484
+7
+6.718685150146484
+8
+7.3476715087890625
+data loaded..
+concatenating data..
+22.571674346923828
+data concatenated...
+Seed data extracted...
+22.571674346923828
+Begin Searchlight None
+Distribute 22.571674346923828
+Broadcast 41.94493103027344
+Run 41.94493103027344
+End Searchlight
+ 49.83330217202504

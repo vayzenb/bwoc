@@ -16,7 +16,7 @@ import bwoc_params as params
 mem = 48
 run_time = "3-00:00:00"
 
-pause_time = 20 #how much time (minutes) to wait between jobs
+pause_time = 30 #how much time (minutes) to wait between jobs
 pause_crit = 10 #how many jobs to do before pausing
 
 
@@ -61,6 +61,8 @@ script_name = 'gca_searchlight'
 n =0 
 
 for loc_sub,erd_sub in zip(sub_list['loc_sub'], sub_list['erd_sub']):
+    
+
     for roi in rois:
         job_name = f'{erd_sub}_{roi}_{script_name}'
         script_path = f'python fmri/{script_name}.py {loc_sub} {erd_sub} {roi}'

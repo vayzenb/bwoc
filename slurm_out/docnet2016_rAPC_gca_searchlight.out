@@ -1,0 +1,33 @@
+libraries loaded...
+spaceloc2016 docnet2016 rAPC
+docnet2016 rAPC [1, 2, 3, 4, 5, 6, 7, 8]
+Searchlight setup ...
+Loading data...
+1
+2.915802001953125
+2
+3.573902130126953
+3
+4.2029876708984375
+4
+4.8317718505859375
+5
+5.460868835449219
+6
+6.089778900146484
+7
+6.718544006347656
+8
+7.3477020263671875
+data loaded..
+concatenating data..
+22.571842193603516
+data concatenated...
+Seed data extracted...
+22.571842193603516
+Begin Searchlight None
+Distribute 22.571842193603516
+Broadcast 41.94038391113281
+Run 41.94038391113281
+End Searchlight
+ 49.556555298964184

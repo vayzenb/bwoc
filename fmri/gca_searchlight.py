@@ -59,7 +59,7 @@ runs = list(range(1,9))
 print(erd_sub, roi, runs)
 
 
-whole_brain_mask = image.load_img('/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_strucseg_periph.nii.gz')
+whole_brain_mask = image.load_img('/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_brain_mask.nii.gz')
 affine = whole_brain_mask.affine
 dimsize = whole_brain_mask.header.get_zooms()  #get dimenisions
 
@@ -123,23 +123,25 @@ def gca(data, sl_mask, myrad, seed_ts):
     data4D = np.transpose(data4D.reshape(-1, data[0].shape[3]))
     #print('mvpd', (resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024)/1024)
 
-    
-
     #calcualte mean TS for target region
     target_ts = np.mean(data4D, axis=1)
 
-    neural_ts= pd.DataFrame(columns = ['seed', 'target'])
-    neural_ts['seed'] = np.squeeze(seed_ts)
-    neural_ts['target'] = np.squeeze(target_ts)
+    #check if target is a constant
+    if np.std(target_ts) == 0:
+        f_diff = 0
+    else:
+        neural_ts= pd.DataFrame(columns = ['seed', 'target'])
+        neural_ts['seed'] = np.squeeze(seed_ts)
+        neural_ts['target'] = np.squeeze(target_ts)
 
-    #extract F stat from granger causality test seed-> target
-    gc_res_seed = grangercausalitytests(neural_ts[['target','seed']], 1, verbose=False)
+        #extract F stat from granger causality test seed-> target
+        gc_res_seed = grangercausalitytests(neural_ts[['target','seed']], 1, verbose=False)
 
-    #extract F stat from granger causality test target-> seed
-    gc_res_target = grangercausalitytests(neural_ts[['seed','target']], 1, verbose=False)
-    
-    #calc difference
-    f_diff = gc_res_seed[1][0]['ssr_ftest'][0]-gc_res_target[1][0]['ssr_ftest'][0]
+        #extract F stat from granger causality test target-> seed
+        gc_res_target = grangercausalitytests(neural_ts[['seed','target']], 1, verbose=False)
+        
+        #calc difference
+        f_diff = gc_res_seed[1][0]['ssr_ftest'][0]-gc_res_target[1][0]['ssr_ftest'][0]
 
 
     return f_diff    

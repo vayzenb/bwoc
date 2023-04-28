@@ -1,0 +1,33 @@
+libraries loaded...
+spaceloc2013 docnet2013 rLO
+docnet2013 rLO [1, 2, 3, 4, 5, 6, 7, 8]
+Searchlight setup ...
+Loading data...
+1
+2.915679931640625
+2
+3.5739288330078125
+3
+4.202968597412109
+4
+4.831809997558594
+5
+5.460857391357422
+6
+6.089801788330078
+7
+6.718742370605469
+8
+7.34759521484375
+data loaded..
+concatenating data..
+22.57177734375
+data concatenated...
+Seed data extracted...
+22.57177734375
+Begin Searchlight None
+Distribute 22.57177734375
+Broadcast 41.94021987915039
+Run 41.94021987915039
+End Searchlight
+ 47.83958165645599

@@ -1,0 +1,33 @@
+libraries loaded...
+spaceloc2014 docnet2014 lPPC
+docnet2014 lPPC [1, 2, 3, 4, 5, 6, 7, 8]
+Searchlight setup ...
+Loading data...
+1
+2.9156417846679688
+2
+3.5737762451171875
+3
+4.20294189453125
+4
+4.8316650390625
+5
+5.460834503173828
+6
+6.0895843505859375
+7
+6.718654632568359
+8
+7.347667694091797
+data loaded..
+concatenating data..
+22.571701049804688
+data concatenated...
+Seed data extracted...
+22.571701049804688
+Begin Searchlight None
+Distribute 22.571701049804688
+Broadcast 41.94508361816406
+Run 41.94508361816406
+End Searchlight
+ 48.867470280329385

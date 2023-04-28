@@ -1,0 +1,33 @@
+libraries loaded...
+spaceloc2014 docnet2014 rAPC
+docnet2014 rAPC [1, 2, 3, 4, 5, 6, 7, 8]
+Searchlight setup ...
+Loading data...
+1
+2.91571044921875
+2
+3.5740318298339844
+3
+4.204143524169922
+4
+4.833091735839844
+5
+5.462028503417969
+6
+6.090854644775391
+7
+6.719875335693359
+8
+7.348857879638672
+data loaded..
+concatenating data..
+22.572917938232422
+data concatenated...
+Seed data extracted...
+22.572917938232422
+Begin Searchlight None
+Distribute 22.572917938232422
+Broadcast 41.94021987915039
+Run 41.94021987915039
+End Searchlight
+ 47.403797296682995

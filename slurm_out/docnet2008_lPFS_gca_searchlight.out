@@ -1,0 +1,33 @@
+libraries loaded...
+spaceloc1008 docnet2008 lPFS
+docnet2008 lPFS [1, 2, 3, 4, 5, 6, 7, 8]
+Searchlight setup ...
+Loading data...
+1
+2.9155731201171875
+2
+3.573925018310547
+3
+4.202980041503906
+4
+4.8317718505859375
+5
+5.460865020751953
+6
+6.089809417724609
+7
+6.718589782714844
+8
+7.347698211669922
+data loaded..
+concatenating data..
+22.571781158447266
+data concatenated...
+Seed data extracted...
+22.571781158447266
+Begin Searchlight None
+Distribute 22.571781158447266
+Broadcast 41.94022750854492
+Run 41.94022750854492
+End Searchlight
+ 49.58612589041392

@@ -1,0 +1,33 @@
+libraries loaded...
+spaceloc2018 docnet2018 rLO
+docnet2018 rLO [1, 2, 3, 4, 5, 6, 7, 8]
+Searchlight setup ...
+Loading data...
+1
+2.9156417846679688
+2
+3.5739898681640625
+3
+4.202972412109375
+4
+4.831871032714844
+5
+5.4608612060546875
+6
+6.089820861816406
+7
+6.718536376953125
+8
+7.347690582275391
+data loaded..
+concatenating data..
+22.571659088134766
+data concatenated...
+Seed data extracted...
+22.571659088134766
+Begin Searchlight None
+Distribute 22.571659088134766
+Broadcast 41.94021987915039
+Run 41.94021987915039
+End Searchlight
+ 48.9104322830836
