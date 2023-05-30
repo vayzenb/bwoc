@@ -43,7 +43,7 @@ out_dir = f'{params.scratch_dir}/derivatives/{analysis_type}'
 
 #whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_strucseg_periph.nii.gz'
 whole_brain_mask = '/opt/fsl/6.0.3/data/standard/MNI152_T1_2mm_brain_mask.nii.gz'
-
+whole_brain_mask = image.load_img(f'{params.study_dir}/derivatives/rois/gm_mask.nii.gz')
 """
 run 2nd level model on each first level
 """
@@ -57,16 +57,26 @@ for roi in rois:
     fc_img_z = []
     for sub in sub_list:
         #check if file exists
-        
+        np_mask = image.get_data(whole_brain_mask)
         if os.path.exists(f'{out_dir}/sub-{sub}_{roi}_{analysis_type}{file_suf}.nii.gz'):
             
             curr_img = image.load_img(f'{out_dir}/sub-{sub}_{roi}_{analysis_type}{file_suf}.nii.gz')
+            affine = curr_img.affine
+            
 
+            np_img = image.get_data(curr_img)
 
-            #z_img = image.clean_img(curr_img, standardize=True)
+            #mask out non-gm voxels
+            np_img[np_mask == 0] = 0
 
-            fc_img_z.append(curr_img)
+            #convert back to nifti
+            z_img = nib.Nifti1Image(np_img, affine)
+
+            #z_img = image.clean_img(curr_img, mask_img =whole_brain_mask)
+
+            fc_img_z.append(z_img)
             fc_img.append(curr_img)
+            
 
     design_matrix = pd.DataFrame([1] * len(fc_img_z),
                             columns=['intercept'])
